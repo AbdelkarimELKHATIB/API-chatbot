@@ -21,7 +21,8 @@ public class DefaultClassificationNaiveBayesDomainService implements Classificat
     }
 
     private String geDomain(OpenNlpResponse nlpResponse) {
-        return nlpResponse.getProb() > 0.7 ? nlpResponse.getDomain()+" "+nlpResponse.getProb() : "None" + nlpResponse.getProb();
+//        return nlpResponse.getProb() > 0.7 ? nlpResponse.getPredicatedResponse()+" "+nlpResponse.getProb() : "None" + nlpResponse.getProb();
+        return nlpResponse.getProb() > 0.7 ? nlpResponse.getPredicatedResponse(): "None" ;
     }
 
 }

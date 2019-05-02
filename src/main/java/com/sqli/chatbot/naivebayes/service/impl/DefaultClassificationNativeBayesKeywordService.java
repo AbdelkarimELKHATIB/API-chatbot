@@ -21,6 +21,7 @@ public class DefaultClassificationNativeBayesKeywordService implements Classific
     }
 
     private String getKeyword(OpenNlpResponse nlpResponse) {
-        return nlpResponse.getProb() > 0.5 ? nlpResponse.getDomain()+" "+nlpResponse.getProb(): "None" + nlpResponse.getProb();
+//        return nlpResponse.getProb() > 0.5 ? nlpResponse.getPredicatedResponse()+" "+nlpResponse.getProb(): "None" + nlpResponse.getProb();
+        return nlpResponse.getProb() > 0.7 ? nlpResponse.getPredicatedResponse() : "None";
     }
 }

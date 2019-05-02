@@ -1,23 +1,23 @@
 package com.sqli.chatbot.naivebayes.util.dto;
 
 public class OpenNlpResponse {
-    private String domain;
+    private String predicatedResponse;
     private double prob;
 
-    public OpenNlpResponse(String domain, double prob) {
-        this.domain = domain;
+    public OpenNlpResponse(String predicatedResponse, double prob) {
+        this.predicatedResponse = predicatedResponse;
         this.prob = prob;
     }
 
     public OpenNlpResponse() {
     }
 
-    public String getDomain() {
-        return domain;
+    public String getPredicatedResponse() {
+        return predicatedResponse;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setPredicatedResponse(String predicatedResponse) {
+        this.predicatedResponse = predicatedResponse;
     }
 
     public double getProb() {
