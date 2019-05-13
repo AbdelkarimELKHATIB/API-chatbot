@@ -12,6 +12,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class OpenNLPCore implements OpenNLPService {
@@ -81,11 +83,38 @@ public class OpenNLPCore implements OpenNLPService {
      * @param searchQuery entered search query
      * @return the most probably predicated result
      */
-    private OpenNlpResponse testModelFileAndPredectBestDomain(DoccatModel model, String searchQuery) {
+    private OpenNlpResponse testModelFileAndPredectBestResult(DoccatModel model, String searchQuery) {
         DocumentCategorizer doccat = new DocumentCategorizerME(model);
         String[] docWords = searchQuery.replaceAll("[^A-Za-z]", " ").split(" ");
         double[] aProbs = doccat.categorize(docWords);
-        return OpenNlpResponseFactory.createOpenNlpDOmainResponse(doccat.getBestCategory(aProbs),getMaxOfDoubleArray(aProbs));
+        return OpenNlpResponseFactory.createOpenNlpDOmainResponse(doccat.getBestCategory(aProbs), getMaxOfDoubleArray(aProbs));
+    }
+    private List<String> testModelFileAndPredectBestKeywords(DoccatModel model, String searchQuery) {
+        DocumentCategorizer doccat = new DocumentCategorizerME(model);
+        String[] docWords = searchQuery.replaceAll("[^A-Za-z]", " ").split(" ");
+        double[] aProbs = doccat.categorize(docWords);
+
+        int i = 0;
+        List<String> results = new ArrayList<>();
+        double probs[] = new double[doccat.getNumberOfCategories()];
+        for (int j = 0; j < doccat.getNumberOfCategories(); j++) {
+            probs[j] = 0;
+        }
+        double seuil=(1.0/(doccat.getNumberOfCategories()*2));
+        for (double prob : aProbs) {
+
+            if (prob > seuil) {
+                for (int j = 0; j < doccat.getNumberOfCategories(); j++) {
+                    probs[j] = 0;
+                }
+                probs[i] = prob;
+                String keyword=doccat.getBestCategory(probs);
+                if(!results.contains(keyword)) results.add(keyword);
+            }
+            i++;
+        }
+
+        return results;
     }
 
     @Override
@@ -94,13 +123,22 @@ public class OpenNLPCore implements OpenNLPService {
         TrainingParameters params = defineTrainingParameters(Constant.ITERATIONS_PARAM, Constant.CUTOFF_PARAM, Constant.ALGORITHM_PARAM);
         DoccatModel model = createModelFromTrainingData(Constant.LANGUAGE_TRAINING_CODE, sampleSteam, params);
         model = saveModelToLocal(model, training_model_path);
-        return testModelFileAndPredectBestDomain(model, searchQuery);
+        return testModelFileAndPredectBestResult(model, searchQuery);
     }
 
-    private double getMaxOfDoubleArray(double probs[]){
-        double max=0;
-        for(int i=0;i<probs.length;i++){
-            max=Math.max(max,probs[i]);
+    @Override
+    public List<String> getMostPredicatedKeywords(String training_file_path, String training_model_path, String searchQuery) throws IOException {
+        ObjectStream sampleSteam = readTrainingData(training_file_path, Constant.CHARSET_NAME);
+        TrainingParameters params = defineTrainingParameters(Constant.ITERATIONS_PARAM, Constant.CUTOFF_PARAM, Constant.ALGORITHM_PARAM);
+        DoccatModel model = createModelFromTrainingData(Constant.LANGUAGE_TRAINING_CODE, sampleSteam, params);
+        model = saveModelToLocal(model, training_model_path);
+        return testModelFileAndPredectBestKeywords(model, searchQuery);
+    }
+
+    private double getMaxOfDoubleArray(double probs[]) {
+        double max = 0;
+        for (int i = 0; i < probs.length; i++) {
+            max = Math.max(max, probs[i]);
         }
         return max;
     }

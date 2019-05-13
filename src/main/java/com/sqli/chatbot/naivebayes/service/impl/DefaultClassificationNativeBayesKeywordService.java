@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class DefaultClassificationNativeBayesKeywordService implements ClassificationNaiveBayesKeywordService {
@@ -15,13 +16,21 @@ public class DefaultClassificationNativeBayesKeywordService implements Classific
     private OpenNLPService nlpService;
 
     @Override
-    public String getKeywordFromSearchQuery(String saerchQuery) throws IOException {
-        OpenNlpResponse response = nlpService.getMostPredicatedResult(Constant.TRAINING_KEYWORD_FILE_PATH, Constant.TRAINING_KEYWORD_MODEL_PATH, saerchQuery);
-        return this.getKeyword(response);
+    public List<String> getKeywordsFromSearchQuery(String searchQuery) throws IOException {
+        return  nlpService.getMostPredicatedKeywords(Constant.TRAINING_KEYWORD_FILE_PATH, Constant.TRAINING_KEYWORD_MODEL_PATH, searchQuery);
+
     }
 
-    private String getKeyword(OpenNlpResponse nlpResponse) {
-//        return nlpResponse.getProb() > 0.5 ? nlpResponse.getPredicatedResponse()+" "+nlpResponse.getProb(): "None" + nlpResponse.getProb();
-        return nlpResponse.getProb() > 0.7 ? nlpResponse.getPredicatedResponse() : "None";
+    @Override
+    public String getMostPredicatedKeywordFromSearchQuery(String searchQuery) throws IOException {
+        OpenNlpResponse response = nlpService.getMostPredicatedResult(Constant.TRAINING_KEYWORD_FILE_PATH, Constant.TRAINING_KEYWORD_MODEL_PATH, searchQuery);
+        return this.geBestKeyword(response);
+
+    }
+
+
+    private String geBestKeyword(OpenNlpResponse nlpResponse) {
+//        return nlpResponse.getProb() > 0.7 ? nlpResponse.getPredicatedResponse()+" "+nlpResponse.getProb() : "None" + nlpResponse.getProb();
+        return nlpResponse.getProb() > 0.4 ? nlpResponse.getPredicatedResponse(): "None" ;
     }
 }

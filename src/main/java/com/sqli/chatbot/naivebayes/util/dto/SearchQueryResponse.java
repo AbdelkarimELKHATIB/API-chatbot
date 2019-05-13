@@ -1,12 +1,13 @@
 package com.sqli.chatbot.naivebayes.util.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class SearchQueryResponse implements Serializable {
     private String domain;
-    private String keyword;
+    private List<String> keyword;
 
-    public SearchQueryResponse(String domain, String keyword) {
+    public SearchQueryResponse(String domain, List<String> keyword) {
         this.domain = domain;
         this.keyword = keyword;
     }
@@ -21,11 +22,11 @@ public class SearchQueryResponse implements Serializable {
         this.domain = domain;
     }
 
-    public String getKeyword() {
+    public List<String> getKeyword() {
         return keyword;
     }
 
-    public void setKeyword(String keyword) {
+    public void setKeyword(List<String> keyword) {
         this.keyword = keyword;
     }
 }

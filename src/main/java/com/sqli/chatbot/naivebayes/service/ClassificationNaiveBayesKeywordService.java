@@ -1,7 +1,9 @@
 package com.sqli.chatbot.naivebayes.service;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface ClassificationNaiveBayesKeywordService {
-    String getKeywordFromSearchQuery(String saerchQuery) throws IOException;
+    List<String> getKeywordsFromSearchQuery(String searchQuery) throws IOException;
+    String getMostPredicatedKeywordFromSearchQuery(String searchQuery) throws  IOException;
 }

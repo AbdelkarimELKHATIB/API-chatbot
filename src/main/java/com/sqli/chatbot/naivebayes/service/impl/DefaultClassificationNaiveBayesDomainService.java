@@ -16,9 +16,11 @@ public class DefaultClassificationNaiveBayesDomainService implements Classificat
 
     @Override
     public String getDomainFromSearchQuery(String saerchQuery) throws IOException {
-        OpenNlpResponse response = nlpService.getMostPredicatedResult(Constant.TRAINING_DOMAIN_FILE_PATH, Constant.TRAINING_DOMAIN_MODEL_PATH, saerchQuery);
-        return this.geDomain(response);
+            OpenNlpResponse response = nlpService.getMostPredicatedResult(Constant.TRAINING_DOMAIN_FILE_PATH, Constant.TRAINING_DOMAIN_MODEL_PATH, saerchQuery);
+            return this.geDomain(response);
+
     }
+
 
     private String geDomain(OpenNlpResponse nlpResponse) {
 //        return nlpResponse.getProb() > 0.7 ? nlpResponse.getPredicatedResponse()+" "+nlpResponse.getProb() : "None" + nlpResponse.getProb();
